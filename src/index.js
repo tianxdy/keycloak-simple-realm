@@ -15,7 +15,7 @@ import { ConfigProvider } from 'antd'
 
 moment.locale('zh-cn')
 
-kec.init({ promiseType: 'native', onLoad: 'check-sso' }).then((auth) => {
+kec.init({ promiseType: 'native', onLoad: 'check-sso' }).then(auth => {
   if (auth) {
     ReactDOM.render(
       <ConfigProvider locale={zhCN}>

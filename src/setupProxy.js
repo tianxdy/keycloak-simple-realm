@@ -1,6 +1,6 @@
 const proxy = require('http-proxy-middleware')
 
-module.exports = (app) => {
+module.exports = app => {
   app.use(
     proxy('/auth/**', {
       target: 'https://oauth.ihelpedu.cn',

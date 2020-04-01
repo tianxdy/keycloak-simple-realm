@@ -6,20 +6,5 @@
       "jsx": true
     }
   },
-  "extends": ["plugin:prettier/recommended", "react-app"],
-  "plugins": ["react"],
-  "rules": {
-    "prettier/prettier": [
-      2,
-      {
-        "singleQuote": true,
-        "trailingComma": "none",
-        "semi": false,
-        "jsxSingleQuote": true
-      },
-      {
-        "usePrettierrc": false
-      }
-    ]
-  }
+  "extends": ["plugin:prettier/recommended", "react-app"]
 }
