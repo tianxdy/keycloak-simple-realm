@@ -22,7 +22,7 @@ const Add = () => {
       <Form.Item label='名'>
         <Input />
       </Form.Item>
-      <Form.Item label='是否可用a'>
+      <Form.Item label='是否可用a b'>
         <Switch />
       </Form.Item>
 
