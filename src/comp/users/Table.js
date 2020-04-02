@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { Modal, Table, Row, message, Form, Input, Button, Col } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
-import { getUsers, unLockUsers, deleteUser } from '../../api/users'
+import { getUsers, unLockUsers, deleteUser, getCount } from '../../api/users'
 
 const { Column } = Table
 const { Search } = Input
@@ -16,9 +16,17 @@ const Users = () => {
   // 查询 page
   const [query, setQuery] = useState(initQuery)
 
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    getCount({ search: query.search }).then(data => {
+      setCount(data)
+    })
+  }, [query.search])
+
   // 搜索用户
   const onSearch = search => {
-    setQuery(q => ({ ...q, search }))
+    setQuery(({ max }) => ({ first: 0, max, search }))
   }
 
   // 显示所有用户
@@ -61,23 +69,22 @@ const Users = () => {
     })
   }
 
-  // 下一页
-  const onNext = () => {
-    setQuery(({ first, max, search }) => ({ first: first + max, max, search }))
-  }
-
-  // 上一页
-  const onPrev = () => {
-    setQuery(({ first, max, search }) => ({
-      first: first - max < 0 ? 0 : first - max,
-      max,
+  // 页面改变
+  const onPageChange = (page, pageSize) => {
+    setQuery(({ max, search }) => ({
+      first: (page - 1) * max,
+      max: pageSize,
       search
     }))
   }
 
-  // 首页
-  const onFirst = () => {
-    setQuery(({ first, max, search }) => ({ first: 0, max, search }))
+  // page size 改变
+  const onShowSizeChange = (current, size) => {
+    setQuery(({ search }) => ({
+      first: 0,
+      max: size,
+      search
+    }))
   }
 
   return (
@@ -115,7 +122,20 @@ const Users = () => {
         </Row>
       </div>
       <div>
-        <Table pagination={false} dataSource={users} rowKey='id'>
+        <Table
+          pagination={{
+            total: count,
+            pageSize: query.max,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            pageSizeOptions: ['10', '20', '50', '100'],
+            showTotal: totle => `共${totle}条`,
+            onChange: onPageChange,
+            onShowSizeChange: onShowSizeChange
+          }}
+          dataSource={users}
+          rowKey='id'
+        >
           <Column
             width='200px'
             title='Id'
@@ -138,27 +158,6 @@ const Users = () => {
           ></Column>
         </Table>
       </div>
-      {query.first === 0 && users.length < query.max ? null : (
-        <div style={{ marginTop: 16 }}>
-          <Form layout='inline'>
-            <Form.Item>
-              <Button disabled={query.first === 0} onClick={onFirst}>
-                第一页
-              </Button>
-            </Form.Item>
-            <Form.Item>
-              <Button disabled={query.first === 0} onClick={onPrev}>
-                上一页
-              </Button>
-            </Form.Item>
-            <Form.Item>
-              <Button disabled={users.length < query.max} onClick={onNext}>
-                下一页
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      )}
     </div>
   )
 }

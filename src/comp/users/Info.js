@@ -1,43 +1,114 @@
-import React from 'react'
-import { Form, Input, Switch, Select } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Form, Input, Switch, Select, Button, message } from 'antd'
+import { postUser, getUser, putUser } from '../../api/users'
 
-const Add = () => {
+import moment from 'moment'
+import useRealm from '../../use/useRealm'
+import useRequiredActions from '../../use/useRequiredActions'
+
+const Info = ({ id }) => {
+  // 有 id 表示展示用户信息 并修改用户信息
+
+  const requiredActions = useRequiredActions()
+  const realm = useRealm()
+
+  const [currentUser, setCurrentUser] = useState()
+
+  const [form] = Form.useForm()
+
+  useEffect(() => {
+    if (id) {
+      getUser(id).then(data => {
+        setCurrentUser(data)
+        form.setFieldsValue(data)
+      })
+    }
+  }, [form, id])
+
+  const onFinish = value => {
+    if (id) {
+      putUser(id, { ...currentUser, ...value }).then(_ =>
+        message.success('修改成功')
+      )
+    } else {
+      postUser(value).then(_ => message.success('添加成功'))
+    }
+  }
+
   return (
-    <Form labelCol={{ span: 4 }} wrapperCol={{ span: 12 }} layout='horizontal'>
-      <Form.Item label='ID'>
+    <Form
+      form={form}
+      labelCol={{ span: 4 }}
+      wrapperCol={{ span: 12 }}
+      layout='horizontal'
+      onFinish={onFinish}
+    >
+      <Form.Item name='id' label='ID'>
+        <Input disabled />
+      </Form.Item>
+      <Form.Item
+        shouldUpdate={(prev, next) => {
+          return prev.id !== next.id
+        }}
+        label='创建时间'
+      >
+        {form => (
+          <div>
+            {moment(form.getFieldValue('createdTimestamp', 'x')).format(
+              'YYYY:MM:DD hh:mm:ss'
+            )}
+          </div>
+        )}
+      </Form.Item>
+      <Form.Item
+        name='username'
+        label='用户名'
+        rules={[{ required: true, message: '请输入用户名' }]}
+      >
+        <Input disabled={id && !realm.editUsernameAllowed} />
+      </Form.Item>
+      <Form.Item
+        name='email'
+        label='电子邮箱'
+        rules={[{ message: '请输入正确的电子邮箱', type: 'email' }]}
+      >
         <Input />
       </Form.Item>
-      <Form.Item label='创建时间'>
+      <Form.Item name='lastName' label='姓'>
         <Input />
       </Form.Item>
-      <Form.Item label='用户名'>
+      <Form.Item name='firstName' label='名'>
         <Input />
       </Form.Item>
-      <Form.Item label='电子邮箱'>
-        <Input />
-      </Form.Item>
-      <Form.Item label='姓'>
-        <Input />
-      </Form.Item>
-      <Form.Item label='名'>
-        <Input />
-      </Form.Item>
-      <Form.Item label='是否可用a b'>
+      <Form.Item name='userEnabled' label='是否可用' valuePropName='checked'>
         <Switch />
       </Form.Item>
-
-      <Form.Item label='验证电子邮箱'>
+      <Form.Item
+        valuePropName='checked'
+        name='emailVerified'
+        label='验证电子邮箱'
+      >
         <Switch />
       </Form.Item>
-      <Form.Item label='用户需要操作'>
-        <Select>
-          <Select.Option value='1'>1</Select.Option>
-          <Select.Option value='2'>2</Select.Option>
-          <Select.Option value='3'>3</Select.Option>
+      <Form.Item name='requiredActions' label='用户需要操作'>
+        <Select mode='multiple'>
+          {requiredActions.map(i => (
+            <Select.Option key={i.alias} value={i.alias}>
+              {i.name}
+            </Select.Option>
+          ))}
         </Select>
+      </Form.Item>
+      <Form.Item wrapperCol={{ offset: 4 }}>
+        <Button type='primary' htmlType='submit'>
+          提交
+        </Button>
+        <Button style={{ marginLeft: 16 }} htmlType='submit'>
+          取消
+        </Button>
       </Form.Item>
     </Form>
   )
 }
 
-export default Add
+export default Info

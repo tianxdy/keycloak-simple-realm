@@ -2,6 +2,7 @@ import axios from 'axios'
 import qs from 'qs'
 import kec from './keycloak'
 import { config } from './keycloak'
+import { message } from 'antd'
 
 const req = axios.create({
   baseURL: `/auth/admin/realms/${config.realm}`
@@ -61,6 +62,8 @@ req.interceptors.response.use(
           requests.push(() => resolve(req(config)))
         })
       }
+    } else if (status === 404) {
+      message.error('该对象不存在')
     } else {
       return Promise.reject(error)
     }

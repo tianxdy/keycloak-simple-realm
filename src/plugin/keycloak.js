@@ -1,7 +1,7 @@
 import Keycloak from 'keycloak-js'
 
 export const config = {
-  url: 'https://oauth.ihelpedu.cn/auth',
+  url: 'http://localhost:8082/auth/',
   realm: 'test',
   clientId: 'security-admin-console'
 }
