@@ -58,6 +58,7 @@ req.interceptors.response.use(
         })
       } else {
         return new Promise(resolve => {
+          console.log(config.url)
           config.url = config.url.replace(config.baseURL, '')
           requests.push(() => resolve(req(config)))
         })

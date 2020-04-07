@@ -7,7 +7,7 @@ import { getUsers, unLockUsers, deleteUser, getCount } from '../../api/users'
 const { Column } = Table
 const { Search } = Input
 
-const Users = () => {
+const UsersTable = ({ onAdd, onEdit }) => {
   const initQuery = { first: 0, max: 10, search: undefined }
 
   const [users, setUsers] = useState([])
@@ -53,7 +53,17 @@ const Users = () => {
   }
 
   // 添加用户
-  const onAddUser = () => {}
+  const onAddUser = () => {
+    if (onAdd) {
+      onAdd()
+    }
+  }
+
+  const onEditUser = id => {
+    if (onEdit) {
+      onEdit(id)
+    }
+  }
 
   // 删除用户
   const onDeleteUser = id => {
@@ -79,7 +89,7 @@ const Users = () => {
   }
 
   // page size 改变
-  const onShowSizeChange = (current, size) => {
+  const onShowSizeChange = (_, size) => {
     setQuery(({ search }) => ({
       first: 0,
       max: size,
@@ -140,7 +150,16 @@ const Users = () => {
             width='200px'
             title='Id'
             dataIndex='id'
-            render={id => <Button type='link'>{id}</Button>}
+            render={id => (
+              <Button
+                onClick={() => {
+                  onEditUser(id)
+                }}
+                type='link'
+              >
+                {id}
+              </Button>
+            )}
           ></Column>
           <Column title='用户名' dataIndex='username'></Column>
           <Column title='电子邮件' dataIndex='email'></Column>
@@ -151,8 +170,13 @@ const Users = () => {
             width='200px'
             render={({ id }) => (
               <div>
-                <Button>修改</Button>
-                <Button onClick={_ => onDeleteUser(id)}>删除</Button>
+                <Button onClick={_ => onEditUser(id)}>修改</Button>
+                <Button
+                  style={{ marginLeft: 16 }}
+                  onClick={_ => onDeleteUser(id)}
+                >
+                  删除
+                </Button>
               </div>
             )}
           ></Column>
@@ -162,4 +186,4 @@ const Users = () => {
   )
 }
 
-export default Users
+export default UsersTable

@@ -2,9 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
+
+import { BrowserRouter as Router } from 'react-router-dom'
+
 import * as serviceWorker from './serviceWorker'
 // import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import zhCN from 'antd/es/locale/zh_CN'
+
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 
@@ -18,9 +22,11 @@ moment.locale('zh-cn')
 kec.init({ promiseType: 'native', onLoad: 'check-sso' }).then(auth => {
   if (auth) {
     ReactDOM.render(
-      <ConfigProvider locale={zhCN}>
-        <App />
-      </ConfigProvider>,
+      <Router>
+        <ConfigProvider locale={zhCN}>
+          <App />
+        </ConfigProvider>
+      </Router>,
       document.getElementById('root')
     )
   } else {

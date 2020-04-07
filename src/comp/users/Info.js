@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { Form, Input, Switch, Select, Button, message } from 'antd'
 import { postUser, getUser, putUser } from '../../api/users'
 
@@ -6,7 +6,7 @@ import moment from 'moment'
 import useRealm from '../../use/useRealm'
 import useRequiredActions from '../../use/useRequiredActions'
 
-const Info = ({ id }) => {
+const Info = ({ id, onCencel, onAfterFinish, afterUpdateUser }) => {
   // 有 id 表示展示用户信息 并修改用户信息
 
   const requiredActions = useRequiredActions()
@@ -17,21 +17,45 @@ const Info = ({ id }) => {
   const [form] = Form.useForm()
 
   useEffect(() => {
-    if (id) {
+    if (afterUpdateUser) {
+      afterUpdateUser(currentUser)
+    }
+  }, [afterUpdateUser, currentUser])
+
+  const loadUser = useCallback(
+    id => {
       getUser(id).then(data => {
         setCurrentUser(data)
         form.setFieldsValue(data)
       })
+    },
+    [form]
+  )
+  useEffect(() => {
+    if (id) {
+      loadUser(id)
     }
-  }, [form, id])
+  }, [form, id, loadUser])
 
   const onFinish = value => {
     if (id) {
-      putUser(id, { ...currentUser, ...value }).then(_ =>
+      setCurrentUser({ ...currentUser, ...value })
+      putUser(id, { ...currentUser, ...value }).then(_ => {
         message.success('修改成功')
-      )
+      })
     } else {
       postUser(value).then(_ => message.success('添加成功'))
+    }
+    if (onAfterFinish) {
+      onAfterFinish()
+    }
+  }
+
+  const onCencelClick = () => {
+    form.resetFields()
+    form.setFieldsValue(currentUser)
+    if (onCencel) {
+      onCencel()
     }
   }
 
@@ -103,7 +127,7 @@ const Info = ({ id }) => {
         <Button type='primary' htmlType='submit'>
           提交
         </Button>
-        <Button style={{ marginLeft: 16 }} htmlType='submit'>
+        <Button style={{ marginLeft: 16 }} onClick={onCencelClick}>
           取消
         </Button>
       </Form.Item>

@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import './App.css'
-import Users from './comp/users/Table'
-import Info from './comp/users/Info'
+import { Switch, Route } from 'react-router-dom'
+import Users from './page/Users'
 
 const App = () => {
   return (
     <div>
-      <Info />
-      <Users />
+      <Switch>
+        <Route path='/users' component={Users}></Route>
+      </Switch>
     </div>
   )
 }
