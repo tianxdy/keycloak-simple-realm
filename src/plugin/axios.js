@@ -41,6 +41,7 @@ req.interceptors.response.use(
     let { status, config } = error.response
 
     if (status === 401) {
+      console.log(kec)
       // 进行刷新动作
       if (!isRefreshing) {
         isRefreshing = true
@@ -58,8 +59,9 @@ req.interceptors.response.use(
         })
       } else {
         return new Promise(resolve => {
-          console.log(config.url)
-          config.url = config.url.replace(config.baseURL, '')
+          if (config.url) {
+            config.url = config.url.replace(config.baseURL, '')
+          }
           requests.push(() => resolve(req(config)))
         })
       }

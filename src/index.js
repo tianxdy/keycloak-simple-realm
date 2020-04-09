@@ -21,6 +21,9 @@ moment.locale('zh-cn')
 
 kec.init({ promiseType: 'native', onLoad: 'check-sso' }).then(auth => {
   if (auth) {
+    console.log(kec)
+    kec.hasResourceRole('query-users')
+    console.log(kec.hasResourceRole('query-users'))
     ReactDOM.render(
       <Router>
         <ConfigProvider locale={zhCN}>

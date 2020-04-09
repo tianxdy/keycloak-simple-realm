@@ -10,6 +10,7 @@ const Info = ({ id, onCencel, onAfterFinish, afterUpdateUser }) => {
   // 有 id 表示展示用户信息 并修改用户信息
 
   const requiredActions = useRequiredActions()
+
   const realm = useRealm()
 
   const [currentUser, setCurrentUser] = useState()
@@ -31,11 +32,12 @@ const Info = ({ id, onCencel, onAfterFinish, afterUpdateUser }) => {
     },
     [form]
   )
+
   useEffect(() => {
     if (id) {
       loadUser(id)
     }
-  }, [form, id, loadUser])
+  }, [id, loadUser])
 
   const onFinish = value => {
     if (id) {
@@ -66,6 +68,7 @@ const Info = ({ id, onCencel, onAfterFinish, afterUpdateUser }) => {
       wrapperCol={{ span: 12 }}
       layout='horizontal'
       onFinish={onFinish}
+      initialValues={{ userEnabled: true }}
     >
       <Form.Item name='id' label='ID'>
         <Input disabled />

@@ -15,3 +15,22 @@ export const unLockUsers = _ =>
   axios.delete('attack-detection/brute-force/users')
 
 export const deleteUser = id => axios.delete(`users/${id}`)
+
+// 重置密码
+export const resetPassword = (id, data) =>
+  axios.put(`users/${id}/reset-password`, data)
+
+// 获取域角色
+export const getRoleMapping = id => axios.get(`users/${id}/role-mappings/realm`)
+
+// 获取用户在客户端下的可用角色
+export const getClientAssignedRoleMapping = (id, clientId) =>
+  axios.get(`users/${id}/role-mappings/clients/${clientId}`)
+
+//   获取用户的有效角色
+export const getClientEffectiveRoleMapping = (id, clientId) =>
+  axios.get(`users/${id}/role-mappings/clients/${clientId}/composite`)
+
+// 获取用户可激活角色
+export const getClientAvailableRoleMapping = (id, clientId) =>
+  axios.get(`users/${id}/role-mappings/clients/${clientId}/available`)
