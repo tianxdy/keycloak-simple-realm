@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { getRoleMapping, getClientAssignedRoleMapping } from '../../api/users'
+import {
+  getRoleMapping,
+  getClientAssignedRoleMapping,
+  getClientAvailableRoleMapping,
+  getClientEffectiveRoleMapping,
+  deleteClientRoleMapping,
+  postClientRoleMapping
+} from '../../api/users'
 
 import { Transfer, Row, Col, Form, Select } from 'antd'
 
 import useClients from '../../use/useClients'
+import TransferList from 'antd/lib/transfer/list'
 
 const { Option } = Select
 
@@ -11,7 +19,9 @@ const { Option } = Select
 const RoleMappingSetting = ({
   available = [], // 可配角色
   assigned = [], // 用户拥有角色
-  effective = [] // 真实角色
+  effective = [], // 有效角色
+  add,
+  remove
 }) => {
   const [selectedKeys, setSelectedKeys] = useState([])
   const [targetKeys, setTargetKeys] = useState([])
@@ -26,26 +36,61 @@ const RoleMappingSetting = ({
 
   const onChange = (nextTargetKeys, direction, moveKeys) => {
     console.log(nextTargetKeys)
+    console.log(direction)
+    const dataSource = [...available, ...assigned]
+    switch (direction) {
+      case 'left':
+        if (remove) {
+          remove(moveKeys)
+        }
+        break
+      case 'right':
+        if (add) {
+          add(moveKeys)
+        }
+        break
+      default:
+        break
+    }
     setTargetKeys(nextTargetKeys)
   }
 
   return (
-    <div>
-      <Transfer
-        dataSource={[...available, ...assigned].map(
-          ({ id: key, name: title }) => ({
+    <Row gutter={[36]}>
+      <Col>
+        <Transfer
+          dataSource={[...available, ...assigned].map(
+            ({ id: key, name: title }) => ({
+              key,
+              title
+            })
+          )}
+          titles={['可用角色', '分配的角色']}
+          selectedKeys={selectedKeys}
+          targetKeys={targetKeys}
+          onSelectChange={onSelectChange}
+          onChange={onChange}
+          render={item => item.title}
+        />
+      </Col>
+      <Col span={12}>
+        <TransferList
+          disabled={true}
+          dataSource={effective.map(({ id: key, name: title }) => ({
             key,
             title
-          })
-        )}
-        titles={['可用角色', '分配的角色']}
-        selectedKeys={selectedKeys}
-        targetKeys={targetKeys}
-        onSelectChange={onSelectChange}
-        onChange={onChange}
-        render={item => item.title}
-      />
-    </div>
+          }))}
+          prefixCls='ant-transfer-list'
+          itemUnit='项'
+          direction={'left'}
+          checkedKeys={effective.map(i => i.id)}
+          titleText={'有效角色'}
+          render={data => {
+            return data.title
+          }}
+        ></TransferList>
+      </Col>
+    </Row>
   )
 }
 
@@ -53,11 +98,36 @@ const RoleMapping = ({ id }) => {
   const clients = useClients()
 
   const [clientAssignedRole, setClientAssignedRole] = useState([])
+  const [clientAvailabledRole, setClientAvailabledRole] = useState([])
+  const [clientEffectiveRole, setclientEffectiveRole] = useState([])
+  const [clientId, setClientId] = useState()
 
   const onClientChange = val => {
+    setClientId(val)
     getClientAssignedRoleMapping(id, val).then(data => {
       setClientAssignedRole(data)
     })
+    getClientAvailableRoleMapping(id, val).then(data => {
+      setClientAvailabledRole(data)
+    })
+    getClientEffectiveRoleMapping(id, val).then(data => {
+      setclientEffectiveRole(data)
+    })
+  }
+
+  const onAddClientRoles = keys => {
+    postClientRoleMapping(
+      id,
+      clientId,
+      keys.map(i => ({ id: i }))
+    )
+  }
+  const onRemoveClientRoles = keys => {
+    deleteClientRoleMapping(
+      id,
+      clientId,
+      keys.map(i => ({ id: i }))
+    )
   }
 
   useEffect(() => {
@@ -97,7 +167,13 @@ const RoleMapping = ({ id }) => {
             </Select>
           </Col>
           <Col span={24}>
-            <RoleMappingSetting assigned={clientAssignedRole} />
+            <RoleMappingSetting
+              available={clientAvailabledRole}
+              assigned={clientAssignedRole}
+              effective={clientEffectiveRole}
+              add={onAddClientRoles}
+              remove={onRemoveClientRoles}
+            />
           </Col>
         </Row>
       </Form.Item>

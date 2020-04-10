@@ -34,3 +34,11 @@ export const getClientEffectiveRoleMapping = (id, clientId) =>
 // 获取用户可激活角色
 export const getClientAvailableRoleMapping = (id, clientId) =>
   axios.get(`users/${id}/role-mappings/clients/${clientId}/available`)
+
+// 删除用户角色
+export const deleteClientRoleMapping = (id, clientId, data) =>
+  axios.delete(`users/${id}/role-mappings/clients/${clientId}`, data)
+
+// 添加用户角色
+export const postClientRoleMapping = (id, clientId, data) =>
+  axios.post(`users/${id}/role-mappings/clients/${clientId}`, data)
