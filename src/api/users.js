@@ -20,8 +20,24 @@ export const deleteUser = id => axios.delete(`users/${id}`)
 export const resetPassword = (id, data) =>
   axios.put(`users/${id}/reset-password`, data)
 
-// 获取域角色
-export const getRoleMapping = id => axios.get(`users/${id}/role-mappings/realm`)
+// 域角色
+export const getAssignedRoleMapping = id =>
+  axios.get(`users/${id}/role-mappings/realm`)
+
+// 有效 角色
+export const getEffectiveRoleMapping = id =>
+  axios.get(`users/${id}/role-mappings/realm/composite`)
+// 可选择角色
+export const getAvailableRoleMapping = id =>
+  axios.get(`users/${id}/role-mappings/realm/available`)
+
+// 删除用户角色
+export const deleteRoleMapping = (id, data) =>
+  axios.delete(`users/${id}/role-mappings/realm`, { data })
+
+// 添加用户角色
+export const postRoleMapping = (id, data) =>
+  axios.post(`users/${id}/role-mappings/realm`, data)
 
 // 获取用户在客户端下的可用角色
 export const getClientAssignedRoleMapping = (id, clientId) =>
@@ -37,7 +53,7 @@ export const getClientAvailableRoleMapping = (id, clientId) =>
 
 // 删除用户角色
 export const deleteClientRoleMapping = (id, clientId, data) =>
-  axios.delete(`users/${id}/role-mappings/clients/${clientId}`, data)
+  axios.delete(`users/${id}/role-mappings/clients/${clientId}`, { data })
 
 // 添加用户角色
 export const postClientRoleMapping = (id, clientId, data) =>

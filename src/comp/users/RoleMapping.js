@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import {
-  getRoleMapping,
+  getAssignedRoleMapping,
+  getEffectiveRoleMapping,
+  deleteRoleMapping,
+  postRoleMapping,
   getClientAssignedRoleMapping,
   getClientAvailableRoleMapping,
   getClientEffectiveRoleMapping,
   deleteClientRoleMapping,
-  postClientRoleMapping
+  postClientRoleMapping,
+  getAvailableRoleMapping
 } from '../../api/users'
 
-import { Transfer, Row, Col, Form, Select } from 'antd'
+import { Transfer, Row, Col, Form, Select, message } from 'antd'
 
 import useClients from '../../use/useClients'
 import TransferList from 'antd/lib/transfer/list'
@@ -23,48 +27,44 @@ const RoleMappingSetting = ({
   add,
   remove
 }) => {
+  const [dataSource, setDatasource] = useState([...available, ...assigned])
   const [selectedKeys, setSelectedKeys] = useState([])
   const [targetKeys, setTargetKeys] = useState([])
 
   useEffect(() => {
-    setTargetKeys(assigned.map(i => i.id))
-  }, [assigned])
+    setDatasource([...available, ...assigned])
+    setTargetKeys(_ => assigned.map(i => i.id))
+  }, [assigned, available])
 
   const onSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
     setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys])
   }
 
   const onChange = (nextTargetKeys, direction, moveKeys) => {
-    console.log(nextTargetKeys)
-    console.log(direction)
-    const dataSource = [...available, ...assigned]
     switch (direction) {
       case 'left':
         if (remove) {
-          remove(moveKeys)
+          remove(assigned.filter(i => moveKeys.includes(i.id)))
         }
         break
       case 'right':
         if (add) {
-          add(moveKeys)
+          add(available.filter(i => moveKeys.includes(i.id)))
         }
         break
       default:
         break
     }
-    setTargetKeys(nextTargetKeys)
   }
 
   return (
     <Row gutter={[36]}>
       <Col>
         <Transfer
-          dataSource={[...available, ...assigned].map(
-            ({ id: key, name: title }) => ({
-              key,
-              title
-            })
-          )}
+          dataSource={dataSource.map(({ id: key, name: title }) => ({
+            key,
+            title
+          }))}
           titles={['可用角色', '分配的角色']}
           selectedKeys={selectedKeys}
           targetKeys={targetKeys}
@@ -97,53 +97,87 @@ const RoleMappingSetting = ({
 const RoleMapping = ({ id }) => {
   const clients = useClients()
 
+  const [assignedRole, setAssignedRole] = useState([])
+  const [availabledRole, setAvailabledRole] = useState([])
+  const [effectiveRole, setEffectiveRole] = useState([])
+
   const [clientAssignedRole, setClientAssignedRole] = useState([])
   const [clientAvailabledRole, setClientAvailabledRole] = useState([])
   const [clientEffectiveRole, setclientEffectiveRole] = useState([])
+
   const [clientId, setClientId] = useState()
+
+  const loadUserRoles = useCallback(() => {
+    getAssignedRoleMapping(id).then(data => {
+      setAssignedRole(data)
+    })
+    getAvailableRoleMapping(id).then(data => {
+      setAvailabledRole(data)
+    })
+    getEffectiveRoleMapping(id).then(data => {
+      setEffectiveRole(data)
+    })
+  }, [id])
+
+  useEffect(() => {
+    loadUserRoles()
+  }, [loadUserRoles])
+
+  const loadUserClientRoles = useCallback(
+    clientId => {
+      getClientAssignedRoleMapping(id, clientId).then(data => {
+        setClientAssignedRole(data)
+      })
+      getClientAvailableRoleMapping(id, clientId).then(data => {
+        setClientAvailabledRole(data)
+      })
+      getClientEffectiveRoleMapping(id, clientId).then(data => {
+        setclientEffectiveRole(data)
+      })
+    },
+    [id]
+  )
 
   const onClientChange = val => {
     setClientId(val)
-    getClientAssignedRoleMapping(id, val).then(data => {
-      setClientAssignedRole(data)
+    loadUserClientRoles(val)
+  }
+
+  const onAddClientRoles = roles => {
+    postClientRoleMapping(id, clientId, roles).then(_ => {
+      message.success('修改成功')
+      loadUserClientRoles(clientId)
     })
-    getClientAvailableRoleMapping(id, val).then(data => {
-      setClientAvailabledRole(data)
-    })
-    getClientEffectiveRoleMapping(id, val).then(data => {
-      setclientEffectiveRole(data)
+  }
+  const onRemoveClientRoles = roles => {
+    deleteClientRoleMapping(id, clientId, roles).then(_ => {
+      message.success('修改成功')
+      loadUserClientRoles(clientId)
     })
   }
 
-  const onAddClientRoles = keys => {
-    postClientRoleMapping(
-      id,
-      clientId,
-      keys.map(i => ({ id: i }))
-    )
-  }
-  const onRemoveClientRoles = keys => {
-    deleteClientRoleMapping(
-      id,
-      clientId,
-      keys.map(i => ({ id: i }))
-    )
-  }
-
-  useEffect(() => {
-    getRoleMapping(id).then(data => {
-      console.log(data)
+  const onAddRoles = roles => {
+    postRoleMapping(id, roles).then(_ => {
+      message.success('修改成功')
+      loadUserRoles()
     })
-  }, [id])
+  }
+  const onRemoveRoles = roles => {
+    deleteRoleMapping(id, roles).then(_ => {
+      message.success('修改成功')
+      loadUserRoles()
+    })
+  }
 
   return (
     <Form layout='horizontal' labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
       <Form.Item label='全局角色'>
-        <Transfer
-          dataSource={[]}
-          titles={['可用角色', '分配的角色']}
-          selectedKeys={[]}
-          render={item => item.title}
+        <RoleMappingSetting
+          available={availabledRole}
+          assigned={assignedRole}
+          effective={effectiveRole}
+          add={onAddRoles}
+          remove={onRemoveRoles}
         />
       </Form.Item>
       <Form.Item label={'应用角色'}>
