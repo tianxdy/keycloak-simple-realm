@@ -58,3 +58,14 @@ export const deleteClientRoleMapping = (id, clientId, data) =>
 // 添加用户角色
 export const postClientRoleMapping = (id, clientId, data) =>
   axios.post(`users/${id}/role-mappings/clients/${clientId}`, data)
+
+// 添加分组
+export const putGroup = (id, groupId) =>
+  axios.put(`users/${id}/groups/${groupId}`)
+
+// 得到用户所在分组
+export const getGroups = (id, query) =>
+  axios.get(`users/${id}/groups`, { params: query })
+// 得到用户组的数量
+export const getGroupsCount = (id, query) =>
+  axios.get(`users/${id}/groups/count`, { params: query })

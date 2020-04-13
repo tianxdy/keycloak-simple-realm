@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { Tabs, message, Button } from 'antd'
+import { Tabs, message } from 'antd'
 import Info from './Info'
 import Attr from './Attr'
 import { putUser } from '../../api/users'
 import Cred from './Cred'
 import RoleMapping from './RoleMapping'
+import GroupSetting from './GroupSetting'
 
 const { TabPane } = Tabs
 
@@ -40,8 +41,8 @@ const User = ({ id }) => {
       <TabPane tab='角色' key={4}>
         <RoleMapping id={currentUser.id} />
       </TabPane>
-      <TabPane tab='组' key={5}>
-        Content of Tab Pane 3
+      <TabPane tab='角色组' key={5}>
+        <GroupSetting id={currentUser.id} />
       </TabPane>
     </Tabs>
   )
