@@ -62,7 +62,9 @@ export const postClientRoleMapping = (id, clientId, data) =>
 // 添加分组
 export const putGroup = (id, groupId) =>
   axios.put(`users/${id}/groups/${groupId}`)
-
+//删除用户分组
+export const deleteGroup = (id, groupId) =>
+  axios.delete(`users/${id}/groups/${groupId}`)
 // 得到用户所在分组
 export const getGroups = (id, query) =>
   axios.get(`users/${id}/groups`, { params: query })
