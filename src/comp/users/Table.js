@@ -1,5 +1,16 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { Modal, Table, Row, message, Form, Input, Button, Col } from 'antd'
+import {
+  Modal,
+  Table,
+  Row,
+  message,
+  Form,
+  Input,
+  Button,
+  Col,
+  PageHeader,
+  Card
+} from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { getUsers, unLockUsers, deleteUser, getCount } from '../../api/users'
@@ -99,89 +110,92 @@ const UsersTable = ({ onAdd, onEdit }) => {
 
   return (
     <div>
-      <div style={{ marginBottom: 16 }}>
-        <Row>
-          <Col span={12}>
-            <Form layout='inline'>
-              <Form.Item>
-                <Search
-                  placeholder='搜索'
-                  value={search}
-                  onSearch={onSearch}
-                  onChange={e => setSearch(e.target.value)}
-                  style={{ width: 200 }}
-                />
-              </Form.Item>
-              <Form.Item>
-                <Button onClick={onShowUsersAll}>查看所有用户</Button>
-              </Form.Item>
-            </Form>
-          </Col>
-          <Col span={12}>
-            <Row justify='end'>
+      <PageHeader title='用户' />
+      <Card>
+        <div style={{ marginBottom: 16 }}>
+          <Row>
+            <Col span={12}>
               <Form layout='inline'>
                 <Form.Item>
-                  <Button onClick={onUnlockUsers}>解锁用户</Button>
+                  <Search
+                    placeholder='搜索'
+                    value={search}
+                    onSearch={onSearch}
+                    onChange={e => setSearch(e.target.value)}
+                    style={{ width: 200 }}
+                  />
                 </Form.Item>
                 <Form.Item>
-                  <Button onClick={onAddUser}>添加用户</Button>
+                  <Button onClick={onShowUsersAll}>查看所有用户</Button>
                 </Form.Item>
               </Form>
-            </Row>
-          </Col>
-        </Row>
-      </div>
-      <div>
-        <Table
-          pagination={{
-            total: count,
-            pageSize: query.max,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            pageSizeOptions: ['10', '20', '50', '100'],
-            showTotal: totle => `共${totle}条`,
-            onChange: onPageChange,
-            onShowSizeChange: onShowSizeChange
-          }}
-          dataSource={users}
-          rowKey='id'
-        >
-          <Column
-            width='200px'
-            title='Id'
-            dataIndex='id'
-            render={id => (
-              <Button
-                onClick={() => {
-                  onEditUser(id)
-                }}
-                type='link'
-              >
-                {id}
-              </Button>
-            )}
-          ></Column>
-          <Column title='用户名' dataIndex='username'></Column>
-          <Column title='电子邮件' dataIndex='email'></Column>
-          <Column title='姓' dataIndex='lastName'></Column>
-          <Column title='名' dataIndex='firstName'></Column>
-          <Column
-            title='操作'
-            width='200px'
-            render={({ id }) => (
-              <div>
-                <Button onClick={_ => onEditUser(id)}>修改</Button>
+            </Col>
+            <Col span={12}>
+              <Row justify='end'>
+                <Form layout='inline'>
+                  <Form.Item>
+                    <Button onClick={onUnlockUsers}>解锁用户</Button>
+                  </Form.Item>
+                  <Form.Item>
+                    <Button onClick={onAddUser}>添加用户</Button>
+                  </Form.Item>
+                </Form>
+              </Row>
+            </Col>
+          </Row>
+        </div>
+        <div>
+          <Table
+            pagination={{
+              total: count,
+              pageSize: query.max,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              pageSizeOptions: ['10', '20', '50', '100'],
+              showTotal: totle => `共${totle}条`,
+              onChange: onPageChange,
+              onShowSizeChange: onShowSizeChange
+            }}
+            dataSource={users}
+            rowKey='id'
+          >
+            <Column
+              width='200px'
+              title='Id'
+              dataIndex='id'
+              render={id => (
                 <Button
-                  style={{ marginLeft: 16 }}
-                  onClick={_ => onDeleteUser(id)}
+                  onClick={() => {
+                    onEditUser(id)
+                  }}
+                  type='link'
                 >
-                  删除
+                  {id}
                 </Button>
-              </div>
-            )}
-          ></Column>
-        </Table>
-      </div>
+              )}
+            ></Column>
+            <Column title='用户名' dataIndex='username'></Column>
+            <Column title='电子邮件' dataIndex='email'></Column>
+            <Column title='姓' dataIndex='lastName'></Column>
+            <Column title='名' dataIndex='firstName'></Column>
+            <Column
+              title='操作'
+              width='200px'
+              render={({ id }) => (
+                <div>
+                  <Button onClick={_ => onEditUser(id)}>修改</Button>
+                  <Button
+                    style={{ marginLeft: 16 }}
+                    onClick={_ => onDeleteUser(id)}
+                  >
+                    删除
+                  </Button>
+                </div>
+              )}
+            ></Column>
+          </Table>
+        </div>
+      </Card>
     </div>
   )
 }

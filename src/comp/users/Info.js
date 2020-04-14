@@ -68,7 +68,7 @@ const Info = ({ id, onCencel, onAfterFinish, afterUpdateUser }) => {
       wrapperCol={{ span: 12 }}
       layout='horizontal'
       onFinish={onFinish}
-      initialValues={{ userEnabled: true }}
+      initialValues={{ enabled: true }}
     >
       <Form.Item name='id' label='ID'>
         <Input disabled />
@@ -107,7 +107,7 @@ const Info = ({ id, onCencel, onAfterFinish, afterUpdateUser }) => {
       <Form.Item name='firstName' label='名'>
         <Input />
       </Form.Item>
-      <Form.Item name='userEnabled' label='是否可用' valuePropName='checked'>
+      <Form.Item name='enabled' label='是否可用' valuePropName='checked'>
         <Switch />
       </Form.Item>
       <Form.Item

@@ -119,8 +119,11 @@ const GroupSetting = ({ id } = {}) => {
     if (currectAvailableSelectKey) {
       putGroup(id, currectAvailableSelectKey).then(_ => {
         message.success('加入成功')
+        setCurrectAvailableSelectKey(undefined)
         onLoadUserGroups()
       })
+    } else {
+      message.warn('请选择要加入的组')
     }
   }
 
@@ -149,8 +152,11 @@ const GroupSetting = ({ id } = {}) => {
     if (currentLeaveKey) {
       deleteGroup(id, currentLeaveKey).then(_ => {
         message.success('离开成功')
+        setCurrentLeaveKey(undefined)
         onLoadUserGroups()
       })
+    } else {
+      message.warn('请选择要离开的组')
     }
   }
 
@@ -176,6 +182,7 @@ const GroupSetting = ({ id } = {}) => {
           </Tree>
           <Pagination
             showQuickJumper
+            current={leaveGroupsQuery.first / leaveGroupsQuery.max + 1}
             pageSize={leaveGroupsQuery.max}
             total={userGroupsCount}
             onChange={onLeaveGroupsPageChange}
@@ -214,6 +221,7 @@ const GroupSetting = ({ id } = {}) => {
             {generateTree(groups, checkKeys)}
           </Tree>
           <Pagination
+            current={availableGroupsQuery.first / availableGroupsQuery.max + 1}
             showQuickJumper
             pageSize={availableGroupsQuery.max}
             total={count}
