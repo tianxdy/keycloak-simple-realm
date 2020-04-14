@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, PageHeader, Col, Tabs, Layout } from 'antd'
+import { Row, PageHeader, Col, Tabs } from 'antd'
 import GroupsTree from '../comp/groups/GroupsTree'
 
 const Groups = () => {

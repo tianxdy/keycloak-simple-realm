@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Tabs, message, Row, Col, PageHeader, Button } from 'antd'
+import { Tabs, message, Row, Col, PageHeader } from 'antd'
 import Info from './Info'
 import Attr from './Attr'
 import { putUser, deleteUser } from '../../api/users'

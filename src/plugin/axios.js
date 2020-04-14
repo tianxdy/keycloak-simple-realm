@@ -57,10 +57,14 @@ req.interceptors.response.use(
               kec.logout()
             }
           })
-        }).finally(_ => {
-          isRefreshing = false
-          requests = []
         })
+          .catch(_ => {
+            kec.logout()
+          })
+          .finally(_ => {
+            isRefreshing = false
+            requests = []
+          })
       } else {
         return new Promise(resolve => {
           if (config.url) {
