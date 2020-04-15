@@ -17,6 +17,7 @@ import { getGroups, getGroupsCount, deleteGroup } from '../../api/users'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 
 import { putGroup } from '../../api/users'
+import RealmGroupsTree from '../common/RealmGroupsTree'
 
 const { TreeNode } = Tree
 
@@ -42,16 +43,6 @@ const generateTree = (treeNodes = [], checkKeys = []) => {
 }
 
 const GroupSetting = ({ id } = {}) => {
-  const [availableGroupsQuery, setAvailableGroupsQuery] = useState({
-    first: 0,
-    max: 20,
-    search: undefined
-  })
-
-  const { groups, count } = useGroups(availableGroupsQuery)
-
-  const [currectAvailableSelectKey, setCurrectAvailableSelectKey] = useState()
-
   const [leaveGroupsQuery, setLeaveGroupsQuery] = useState({
     first: 0,
     max: 20,
@@ -92,34 +83,10 @@ const GroupSetting = ({ id } = {}) => {
     return needCheckKeys
   }, [userAllGroups])
 
-  useEffect(() => {}, [id])
-
-  const onAvilableGroupSearch = search => {
-    const nSearch = search.trim()
-    setAvailableGroupsQuery(s => ({
-      ...s,
-      first: 0,
-      search: nSearch.length > 0 ? nSearch : undefined
-    }))
-  }
-
-  const onAvailableGroupsPageChange = page => {
-    setAvailableGroupsQuery(({ search, max }) => ({
-      max,
-      search,
-      first: (page - 1) * max
-    }))
-  }
-
-  const onAvailableGroupsSelect = selectKeys => {
-    setCurrectAvailableSelectKey(selectKeys[0])
-  }
-
-  const onJoin = _ => {
+  const onJoin = currectAvailableSelectKey => {
     if (currectAvailableSelectKey) {
       putGroup(id, currectAvailableSelectKey).then(_ => {
         message.success('加入成功')
-        setCurrectAvailableSelectKey(undefined)
         onLoadUserGroups()
       })
     } else {
@@ -192,44 +159,7 @@ const GroupSetting = ({ id } = {}) => {
         </Card>
       </Col>
       <Col span={6}>
-        <Card
-          title={
-            <div>
-              可用角色组
-              <Tooltip
-                placement='topLeft'
-                title='子组拥有父组的所有属性设置子组会继承父组的所有属性'
-                arrowPointAtCenter
-              >
-                <QuestionCircleOutlined style={{ marginLeft: 12 }} />
-              </Tooltip>
-            </div>
-          }
-          extra={<Button onClick={onJoin}>加入</Button>}
-        >
-          <Input.Search
-            style={{ marginBottom: 8 }}
-            onSearch={onAvilableGroupSearch}
-          />
-          <Tree
-            height={500}
-            defaultExpandAll={true}
-            selectable={true}
-            blockNode
-            onSelect={onAvailableGroupsSelect}
-          >
-            {generateTree(groups, checkKeys)}
-          </Tree>
-          <Pagination
-            current={availableGroupsQuery.first / availableGroupsQuery.max + 1}
-            showQuickJumper
-            pageSize={availableGroupsQuery.max}
-            total={count}
-            onChange={onAvailableGroupsPageChange}
-            size='small'
-            style={{ marginTop: 16, float: 'right' }}
-          />
-        </Card>
+        <RealmGroupsTree join={onJoin} checkKeys={checkKeys} />
       </Col>
     </Row>
   )

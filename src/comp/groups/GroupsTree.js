@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Card, Tree, Row, Col, Input, Button, Pagination } from 'antd'
 import useGroups from '../../use/useGroups'
-
 const { TreeNode } = Tree
 
 const generateTree = (treeNodes = []) => {
@@ -11,6 +10,7 @@ const generateTree = (treeNodes = []) => {
     </TreeNode>
   ))
 }
+
 const GroupsTree = () => {
   const [query, setQuery] = useState({
     first: 0,

@@ -1,22 +1,16 @@
 import React from 'react'
-import { Row, PageHeader, Col, Tabs } from 'antd'
-import GroupsTree from '../comp/groups/GroupsTree'
-
-const Groups = () => {
+import { Switch, Route } from 'react-router-dom'
+import Table from '../comp/groups/Table'
+const Groups = ({ history, match: { path } }) => {
   return (
-    <Row>
-      <PageHeader title='角色组' />
-      <Col span={24}>
-        <Tabs type='card'>
-          <Tabs.TabPane key={1} tab='角色组'>
-            <GroupsTree />
-          </Tabs.TabPane>
-          <Tabs.TabPane key={2} tab='默认角色组'>
-            123
-          </Tabs.TabPane>
-        </Tabs>
-      </Col>
-    </Row>
+    <Switch>
+      <Route
+        path={`${path}`}
+        render={({ history }) => {
+          return <Table />
+        }}
+      />
+    </Switch>
   )
 }
 
