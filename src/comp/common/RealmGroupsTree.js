@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Row, Col, Tree, Card, Tooltip, Button, Pagination, Input } from 'antd'
+import { Tree, Card, Tooltip, Button, Pagination, Input } from 'antd'
 
 import useGroups from '../../use/useGroups'
 
@@ -85,6 +85,7 @@ const RealmGroupsTree = ({ join, checkKeys = [] } = {}) => {
         selectable={true}
         blockNode
         onSelect={onAvailableGroupsSelect}
+        selectedKeys={[currectAvailableSelectKey]}
       >
         {generateTree(groups, checkKeys)}
       </Tree>

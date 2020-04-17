@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Card, Tree, Row, Col, Input, Button, Pagination } from 'antd'
 import useGroups from '../../use/useGroups'
+import { withRouter } from 'react-router-dom'
+
 const { TreeNode } = Tree
 
 const generateTree = (treeNodes = []) => {
@@ -11,7 +13,7 @@ const generateTree = (treeNodes = []) => {
   ))
 }
 
-const GroupsTree = () => {
+const GroupsTree = ({ history }) => {
   const [query, setQuery] = useState({
     first: 0,
     max: 20,
@@ -44,7 +46,11 @@ const GroupsTree = () => {
   }
 
   const hasSelectKeyNoRoot = () => {
-    return !(selectKey && selectKey !== 'root')
+    return !(selectKey && selectKey !== 'realm')
+  }
+
+  const onNew = _ => {
+    history.push(`/groups/add/parent/${selectKey}`)
   }
 
   return (
@@ -57,7 +63,9 @@ const GroupsTree = () => {
               <Button style={{ marginLeft: 16 }} />
             </Col>
             <Col span={6}>
-              <Button>新建</Button>
+              <Button onClick={onNew} disabled={!selectKey}>
+                新建
+              </Button>
               <Button
                 disabled={hasSelectKeyNoRoot()}
                 style={{ marginLeft: 16 }}
@@ -87,7 +95,7 @@ const GroupsTree = () => {
         </Col>
         <Col span={24}>
           <Tree defaultExpandAll selectable onSelect={onSelectKey}>
-            <TreeNode key='root' title='角色组'>
+            <TreeNode key='realm' title='角色组'>
               {generateTree(groups)}
             </TreeNode>
           </Tree>
@@ -106,4 +114,4 @@ const GroupsTree = () => {
   )
 }
 
-export default GroupsTree
+export default withRouter(GroupsTree)

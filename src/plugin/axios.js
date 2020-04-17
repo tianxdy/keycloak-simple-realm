@@ -38,7 +38,7 @@ req.interceptors.response.use(
   },
   error => {
     // 发生错误后刷新token 重新亲求
-    let { status, config } = error.response
+    let { status, config, data } = error.response
 
     if (status === 401) {
       // 进行刷新动作
@@ -76,6 +76,8 @@ req.interceptors.response.use(
     } else if (status === 404) {
       message.error('该对象不存在')
     } else {
+      // to_do 需要添加信息本地化
+      message.error(data.errorMessage)
       return Promise.reject(error)
     }
   }
