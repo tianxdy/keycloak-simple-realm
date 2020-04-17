@@ -34,7 +34,17 @@ req.interceptors.response.use(
   response => {
     //let { status, config } = response
     //let { code, data } = response.data
-    return response.data
+    const {
+      headers: { location }
+    } = response
+    // 处理 添加 域 group 不返回id
+    let locationId
+    if (location) {
+      const locationArray = location.split('/')
+      locationId = locationArray[locationArray.length - 1]
+    }
+
+    return response.data ? response.data : { locationId }
   },
   error => {
     // 发生错误后刷新token 重新亲求

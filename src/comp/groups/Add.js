@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, PageHeader, Form, Input, Col, Button, message } from 'antd'
 import { withRouter } from 'react-router-dom'
-import { postGroups, postChidrenGroups } from '../../api/groups'
+import { postGroup, postChidrenGroups } from '../../api/groups'
 const Add = ({
   match: {
     params: { id = '' }
@@ -11,12 +11,14 @@ const Add = ({
   console.log(id)
   const onFinish = values => {
     if (id === 'realm') {
-      postGroups(values).then(_ => {
+      postGroup(values).then(({ locationId }) => {
         message.success('添加成功')
+        history.push(`/groups/${locationId}`)
       })
     } else {
-      postChidrenGroups(id, values).then(_ => {
+      postChidrenGroups(id, values).then(({ id }) => {
         message.success('添加成功')
+        history.push(`/groups/${id}`)
       })
     }
   }
@@ -41,7 +43,14 @@ const Add = ({
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 7 }}>
             <Button htmlType='submit'>保存</Button>
-            <Button style={{ marginLeft: 16 }}>取消</Button>
+            <Button
+              onClick={_ => {
+                history.goBack()
+              }}
+              style={{ marginLeft: 16 }}
+            >
+              取消
+            </Button>
           </Form.Item>
         </Form>
       </Col>
