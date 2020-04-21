@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, PageHeader, Form, Input, Col, Button, message } from 'antd'
 import { withRouter } from 'react-router-dom'
-import { postGroup, postChidrenGroups } from '../../api/groups'
+import { postGroup, postChidrenGroup } from '../../api/groups'
 const Add = ({
   match: {
     params: { id = '' }
@@ -16,7 +16,7 @@ const Add = ({
         history.push(`/groups/${locationId}`)
       })
     } else {
-      postChidrenGroups(id, values).then(({ id }) => {
+      postChidrenGroup(id, values).then(({ id }) => {
         message.success('添加成功')
         history.push(`/groups/${id}`)
       })

@@ -1,25 +1,49 @@
 import React, { useEffect, useState } from 'react'
-import { PageHeader, Tabs, Card, Form, Input, Button } from 'antd'
-import { getGroup } from '../../api/groups'
+import { PageHeader, Tabs, Card, Form, Input, Button, message } from 'antd'
+import { getGroup, putGroup } from '../../api/groups'
 
 const { TabPane } = Tabs
 
 const Info = ({ id = '' } = {}) => {
   const [currentGroup, setCurrentGroup] = useState({})
 
+  const [form] = Form.useForm()
+
   useEffect(() => {
     getGroup(id).then(data => {
-      setCurrentGroup(data)
+      console.log(data)
+      if (data) {
+        form.setFieldsValue({ name: data.name })
+        setCurrentGroup(data)
+      }
     })
-  }, [id])
+  }, [currentGroup.name, form, id])
+
+  const onCencalEditName = _ => {
+    form.setFieldsValue({ name: currentGroup.name })
+  }
+
+  const onEditName = values => {
+    const newCurrentGroup = { ...currentGroup, ...values }
+    putGroup(id, newCurrentGroup).then(_ => {
+      message.success('修改成功')
+      setCurrentGroup(newCurrentGroup)
+    })
+  }
 
   return (
     <div>
-      <PageHeader title='hh' />
+      <PageHeader title={currentGroup.name} />
       <Tabs type='card' defaultActiveKey='1'>
         <TabPane tab='设置' key='1'>
           <Card>
-            <Form labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
+            <Form
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 8 }}
+              initialValues={{ name: currentGroup.name }}
+              onFinish={onEditName}
+            >
               <Form.Item
                 name='name'
                 label='名称'
@@ -27,11 +51,30 @@ const Info = ({ id = '' } = {}) => {
               >
                 <Input />
               </Form.Item>
-              <Form.Item wrapperCol={{ offset: 5 }}>
-                <Button htmlType='submit' type='primary'>
-                  保存
-                </Button>
-                <Button style={{ marginLeft: 16 }}>取消</Button>
+              <Form.Item
+                shouldUpdate
+                dependencies={['name']}
+                wrapperCol={{ offset: 5 }}
+              >
+                {({ getFieldValue }) => {
+                  return (
+                    <div>
+                      <Button
+                        disabled={getFieldValue('name') === currentGroup.name}
+                        htmlType='submit'
+                        type='primary'
+                      >
+                        保存
+                      </Button>
+                      <Button
+                        onClick={onCencalEditName}
+                        style={{ marginLeft: 16 }}
+                      >
+                        取消
+                      </Button>
+                    </div>
+                  )
+                }}
               </Form.Item>
             </Form>
           </Card>

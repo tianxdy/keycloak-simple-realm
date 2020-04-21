@@ -52,6 +52,9 @@ const GroupsTree = ({ history }) => {
   const onNew = _ => {
     history.push(`/groups/add/parent/${selectKey}`)
   }
+  const onEdit = _ => {
+    history.push(`/groups/${selectKey}`)
+  }
 
   return (
     <Card>
@@ -69,6 +72,7 @@ const GroupsTree = ({ history }) => {
               <Button
                 disabled={hasSelectKeyNoRoot()}
                 style={{ marginLeft: 16 }}
+                onClick={onEdit}
               >
                 修改
               </Button>

@@ -16,7 +16,6 @@ const Users = ({ history, match: { path } }) => {
       <Route
         path={`${path}/:id`}
         render={({ match }) => {
-          console.log(match.params.id)
           return <User id={match.params.id} />
         }}
       />

@@ -17,7 +17,7 @@ const useGroups = ({ first = 0, max = 20, search = undefined } = {}) => {
   }, [first, max, search])
 
   useEffect(() => {
-    getCount({ search }).then(data => {
+    getCount({ search, top: true }).then(data => {
       setCount(data.count)
     })
   }, [search])

@@ -9,13 +9,15 @@ export const getCount = query => axios.get('groups/count', { params: query })
 
 export const getDefaultGroups = _ => axios.get('default-groups')
 
-export const putDefaultGroups = groupId =>
+export const putDefaultGroup = groupId =>
   axios.put(`default-groups/${groupId}`, { groupId, realm: config.realm })
 
-export const deleteDefaultGroups = groupId =>
+export const deleteDefaultGroup = groupId =>
   axios.delete(`default-groups/${groupId}`)
 
 export const postGroup = data => axios.post('/groups', data)
 
-export const postChidrenGroups = (id, data) =>
+export const postChidrenGroup = (id, data) =>
   axios.post(`/groups/${id}/children`, data)
+
+export const putGroup = (id, data) => axios.put(`groups/${id}`, data)

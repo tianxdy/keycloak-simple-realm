@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { Card, Row, Col, Button, Tree, message } from 'antd'
 import {
   getDefaultGroups,
-  putDefaultGroups,
-  deleteDefaultGroups
+  putDefaultGroup,
+  deleteDefaultGroup
 } from '../../api/groups'
 
 import RealmGroupsTree from '../common/RealmGroupsTree'
@@ -19,7 +19,7 @@ const DefaultGroups = () => {
 
   const onRemove = () => {
     if (removeKey) {
-      deleteDefaultGroups(removeKey).then(_ => {
+      deleteDefaultGroup(removeKey).then(_ => {
         loadDefaultGroups()
         message.success('删除角色组成功')
       })
@@ -43,7 +43,7 @@ const DefaultGroups = () => {
 
   const onJoin = val => {
     if (val) {
-      putDefaultGroups(val).then(_ => {
+      putDefaultGroup(val).then(_ => {
         loadDefaultGroups()
         message.success('加入成功')
       })

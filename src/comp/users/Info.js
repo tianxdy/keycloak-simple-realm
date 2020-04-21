@@ -46,10 +46,12 @@ const Info = ({ id, onCencel, onAfterFinish, afterUpdateUser }) => {
         message.success('修改成功')
       })
     } else {
-      postUser(value).then(_ => message.success('添加成功'))
-    }
-    if (onAfterFinish) {
-      onAfterFinish()
+      postUser(value).then(_ => {
+        message.success('添加成功')
+        if (onAfterFinish) {
+          onAfterFinish()
+        }
+      })
     }
   }
 

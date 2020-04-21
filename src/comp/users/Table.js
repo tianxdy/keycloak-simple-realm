@@ -30,7 +30,7 @@ const UsersTable = ({ onAdd, onEdit }) => {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
-    getCount({ search: query.search }).then(data => {
+    getCount({ search: query.search, top: true }).then(data => {
       setCount(data)
     })
   }, [query.search])
