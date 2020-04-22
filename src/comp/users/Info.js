@@ -18,7 +18,7 @@ const Info = ({ id, onCencel, onAfterFinish, afterUpdateUser }) => {
   const [form] = Form.useForm()
 
   useEffect(() => {
-    if (afterUpdateUser) {
+    if (afterUpdateUser && currentUser) {
       afterUpdateUser(currentUser)
     }
   }, [afterUpdateUser, currentUser])

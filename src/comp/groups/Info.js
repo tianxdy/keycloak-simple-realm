@@ -9,7 +9,8 @@ import {
   message,
   Col,
   Row,
-  Select
+  Select,
+  Table
 } from 'antd'
 import {
   getGroup,
@@ -30,6 +31,7 @@ import RoleMappingSetting from '../common/RoleMappingSetting'
 import useClients from '../../use/useClients'
 const { TabPane } = Tabs
 const { Option } = Select
+const { Column } = Table
 
 const Info = ({ id = '', history } = {}) => {
   const clients = useClients()
@@ -251,8 +253,12 @@ const Info = ({ id = '', history } = {}) => {
             </Form>
           </Card>
         </TabPane>
-        <TabPane tab='Tab 3' key='3'>
-          <Card>3</Card>
+        <TabPane tab='用户' key='3'>
+          <Card>
+            <Table>
+              <Column title=''></Column>
+            </Table>
+          </Card>
         </TabPane>
       </Tabs>
     </div>
