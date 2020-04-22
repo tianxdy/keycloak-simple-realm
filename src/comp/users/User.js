@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Tabs, message, Row, Col, PageHeader } from 'antd'
+import { Tabs, message, Row, Col, PageHeader, Button } from 'antd'
 import Info from './Info'
 import Attr from './Attr'
 import { putUser, deleteUser } from '../../api/users'
@@ -43,14 +43,14 @@ const User = ({ id, history }) => {
               return last ? (
                 <span>{route.breadcrumbName}</span>
               ) : (
-                <Link
+                <Button
                   type='link'
                   onClick={_ => {
                     history.push(route.path)
                   }}
                 >
                   {route.breadcrumbName}
-                </Link>
+                </Button>
               )
             }
           }}

@@ -28,6 +28,7 @@ export const getAssignedRoleMapping = id =>
 // 有效 角色
 export const getEffectiveRoleMapping = id =>
   axios.get(`users/${id}/role-mappings/realm/composite`)
+
 // 可选择角色
 export const getAvailableRoleMapping = id =>
   axios.get(`users/${id}/role-mappings/realm/available`)

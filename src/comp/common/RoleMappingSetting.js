@@ -11,7 +11,7 @@ const RoleMappingSetting = ({
   effective = [], // 有效角色
   add,
   remove
-}) => {
+} = {}) => {
   const [dataSource, setDatasource] = useState([...available, ...assigned])
   const [selectedKeys, setSelectedKeys] = useState([])
   const [targetKeys, setTargetKeys] = useState([])
